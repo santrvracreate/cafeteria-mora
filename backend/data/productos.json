@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "nombre": "Cafe Americano",
+    "precio": 12,
+    "disponible": true,
+    "emoji": "coffee"
+  },
+  {
+    "id": 2,
+    "nombre": "Capuccino",
+    "precio": 18,
+    "disponible": true,
+    "emoji": "cup"
+  },
+  {
+    "id": 3,
+    "nombre": "Latte",
+    "precio": 16,
+    "disponible": true,
+    "emoji": "milk"
+  },
+  {
+    "id": 4,
+    "nombre": "Brownie",
+    "precio": 10,
+    "disponible": false,
+    "emoji": "cake"
+  },
+  {
+    "id": 5,
+    "nombre": "Mocha",
+    "precio": 20,
+    "disponible": true,
+    "emoji": "coffee"
+  },
+  {
+    "id": 6,
+    "nombre": "Te Verde",
+    "precio": 8,
+    "disponible": true,
+    "emoji": "leaf"
+  },
+  {
+    "id": 7,
+    "nombre": "Frappe",
+    "precio": 22,
+    "disponible": true,
+    "emoji": "ice"
+  }
+]
