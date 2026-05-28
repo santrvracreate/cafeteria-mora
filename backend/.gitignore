@@ -1,0 +1,17 @@
+# .gitignore — NO subir estos archivos a GitHub
+
+# Variables de entorno — contienen datos sensibles
+.env
+.env.local
+.env.production
+
+# Dependencias — se regeneran con npm install
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

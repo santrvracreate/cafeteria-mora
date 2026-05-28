@@ -1,35 +1,40 @@
 // modules/utilidades.js
-// Funciones reutilizables del servidor
-// Respuesta de exito estandar
+// Funciones auxiliares compartidas por todos los modulos del backend de Aroma
+
+/**
+ * Construye un objeto de respuesta exitosa estandarizado.
+ * @param {*} datos - El payload principal a devolver al cliente.
+ * @param {string} [mensaje] - Mensaje descriptivo opcional.
+ * @returns {{ ok: true, mensaje?: string, datos: * }}
+ */
 function respuestaOk(datos, mensaje) {
-  return {
-    ok: true,
-    mensaje: mensaje || "Operacion exitosa",
-    datos: datos,
-  };
+  const respuesta = { ok: true };
+  if (mensaje) respuesta.mensaje = mensaje;
+  respuesta.datos = datos;
+  return respuesta;
 }
-// Respuesta de error estandar
-function respuestaError(mensaje, codigo) {
-  return {
-    ok: false,
-    error: mensaje || "Error interno",
-    codigo: codigo || 500,
-  };
+
+/**
+ * Construye un objeto de respuesta de error estandarizado.
+ * @param {string} error - Descripcion del error.
+ * @param {number} [codigo=400] - Codigo de estado HTTP asociado.
+ * @returns {{ ok: false, error: string, codigo: number }}
+ */
+function respuestaError(error, codigo = 400) {
+  return { ok: false, error, codigo };
 }
-// Validar que un campo no este vacio
+
+/**
+ * Valida que un campo requerido no sea nulo, undefined ni cadena vacia.
+ * @param {*} valor - El valor a validar.
+ * @param {string} campo - Nombre del campo (para el mensaje de error).
+ * @returns {string|null} Mensaje de error si falla, null si es valido.
+ */
 function validarRequerido(valor, campo) {
-  if (valor === undefined || valor === null || valor === "") {
-    return `El campo '${campo}' es obligatorio`;
+  if (valor === undefined || valor === null || String(valor).trim() === '') {
+    return `El campo ${campo} es obligatorio`;
   }
-  return null; // null = sin error
+  return null;
 }
-// Formatear precio a 2 decimales
-function formatearPrecio(precio) {
-  return parseFloat(precio).toFixed(2);
-}
-module.exports = {
-  respuestaOk,
-  respuestaError,
-  validarRequerido,
-  formatearPrecio,
-};
+
+module.exports = { respuestaOk, respuestaError, validarRequerido };
