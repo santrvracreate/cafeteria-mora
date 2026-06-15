@@ -21,62 +21,6 @@
 //    cada ítem del menú. Si quieres agregar un
 //    producto nuevo, solo añade un objeto aquí.
 // ══════════════════════════════════════════════
-const productos = [
-  {
-    id: 1,
-    nombre: "Café Americano",
-    descripcion: "Café negro clásico",
-    precio: 12,
-    detalles:
-      "Preparado con granos 100% arábica, tostado medio. Sabor limpio y equilibrado.",
-    imagen: "img/cafe-americano.jpg",
-  },
-  {
-    id: 2,
-    nombre: "Frappe de Chocolate",
-    descripcion: "Frappe frío a base de chocolate puro",
-    precio: 15,
-    detalles:
-      "Bebida helada con chocolate belga y crema batida. Perfecta para el calor.",
-    imagen: "img/Frappe-chocolate.jpg",
-  },
-  {
-    id: 3,
-    nombre: "Dona Rellena",
-    descripcion: "Dona rellena de crema pastelera",
-    precio: 10,
-    detalles:
-      "Dona esponjosa con crema pastelera casera. Receta artesanal de la casa.",
-    imagen: "img/dona-rellena.jpg",
-  },
-  {
-    id: 4,
-    nombre: "Rollo de Canela",
-    descripcion: "Rollo extra crujiente de canela",
-    precio: 10,
-    detalles:
-      "Masa suave con canela y glaseado de queso crema. Horneado fresco cada mañana.",
-    imagen: "img/rollo-canela.jpg",
-  },
-  {
-    id: 5,
-    nombre: "Latte Caramel",
-    descripcion: "Café latte con caramelo y espuma",
-    precio: 18,
-    detalles:
-      "Espresso con leche vaporizada y caramelo artesanal. Dulce y cremoso.",
-    imagen: "img/latte-caramel.jpg",
-  },
-  {
-    id: 6,
-    nombre: "Frappuccino",
-    descripcion: "Bebida de café frío licuado con hielo y leche",
-    precio: 18,
-    detalles:
-      "Café helado licuado con consistencia cremosa similar a un granizado. Irresistible.",
-    imagen: "img/Frapuchino.jpg",
-  },
-];
 
 // ══════════════════════════════════════════════
 // 2. ESTADO DEL CARRITO + LOCALSTORAGE
@@ -523,15 +467,26 @@ function renderizarCarrito() {
     });
   }
 
-  // ── Evento: Confirmar pedido ──
-  // Simula la confirmación del pedido y vacía el carrito.
-  // Aquí podrías conectar a un backend o pasarela de pago.
   const btnCheckout = cartContainer.querySelector(".btn-checkout");
   if (btnCheckout) {
-    btnCheckout.addEventListener("click", function () {
-      mostrarToast("¡Pedido confirmado! Gracias por tu compra 🎉");
+    btnCheckout.addEventListener("click", async function () {
+      const items = carrito.map((item) => ({
+        product_id: item.id,
+        cantidad: item.cantidad,
+      }));
+
+      const resultado = await apiPost("/api/orders", { items });
+
+      if (!resultado.ok) {
+        mostrarToast("Error al confirmar pedido ❌");
+        return;
+      }
+
+      mostrarToast(
+        `¡Pedido confirmado! Total: Bs. ${resultado.datos.total} 🎉`,
+      );
       carrito = [];
-      guardarCarrito(); // CORRECCIÓN: persistir cambio
+      guardarCarrito();
       actualizarContador();
       renderizarCarrito();
     });
@@ -581,7 +536,7 @@ function agregarAlCarrito(producto) {
  * Genera las tarjetas HTML de todos los productos
  * y las inserta en el contenedor del menú.
  */
-function renderizarProductos() {
+function renderizarProductos(productos) {
   if (!productsContainer) return;
 
   // Limpiar el contenedor antes de renderizar
@@ -592,24 +547,24 @@ function renderizarProductos() {
     card.className = "product-card";
 
     card.innerHTML = `
-      <div class="product-img-wrap">
-        <img
-          src="${producto.imagen}"
-          alt="${producto.nombre}"
-          class="product-img"
-          onerror="this.src='https://placehold.co/300x200/4e3629/white?text=☕'"
-        />
+    <div class="product-img-wrap">
+      <img
+        src="${producto.imagen}"
+        alt="${producto.nombre}"
+        class="product-img"
+        onerror="this.src='https://placehold.co/300x200/4e3629/white?text=☕'"
+      />
+    </div>
+    <div class="product-info">
+      <h3>${producto.nombre}</h3>
+      <p>${producto.descripcion}</p>
+      <span class="product-price">Bs. ${producto.precio}</span>
+      <div class="button-group">
+        <button class="btn-add"     data-id="${producto.id}">+ Agregar</button>
+        <button class="btn-details" data-id="${producto.id}">Ver detalles</button>
       </div>
-      <div class="product-info">
-        <h3>${producto.nombre}</h3>
-        <p>${producto.descripcion}</p>
-        <span class="product-price">Bs. ${producto.precio}</span>
-        <div class="button-group">
-          <button class="btn-add"     data-id="${producto.id}">+ Agregar</button>
-          <button class="btn-details" data-id="${producto.id}">Ver detalles</button>
-        </div>
-      </div>
-    `;
+    </div>
+  `;
 
     productsContainer.appendChild(card);
   });
